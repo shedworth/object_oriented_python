@@ -6,31 +6,40 @@ def insult(func):
         print("...you tosser!")
     return wrapper
 
+def validate(func):
+    def wrapper(*args, **kwargs):
+        if "password" in kwargs:
+            if kwargs['password'] == "walrus":
+                return func(*args)
+        print("password incorrect")
+    return wrapper
 
 class InsultMath:
 
-    def insultiply(self, *args):
+    def insultiply(self, *args, **kwargs):
 
+        @validate
         @insult
-        def multiply(*args):
+        def multiply(*args, **kwargs):
             result = args[0]
             for arg in args[1:]:
                 result = result * arg 
             print(result)
 
-        multiply(*args)
+        multiply(*args, **kwargs)
 
 
-    def insultadd(self, *args):
+    def insultadd(self, *args, **kwargs):
 
+        @validate
         @insult
-        def add(*args):
+        def add(*args, **kwargs):
             result = args[0]
             for arg in args[1:]:
                 result = result + arg
             print(result)
 
-        add(*args)
+        add(*args, **kwargs)
 
 
     def insultsubtract(self, *args):
