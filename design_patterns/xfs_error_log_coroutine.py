@@ -8,9 +8,10 @@ serial numbers:
 """
 
 import re
-
+import types
 """Coroutine that reads file in reverse and yields first 
 matching instance of regex"""
+@types.coroutine
 def match_regex(filename, regex):
     with open(filename) as file:
         lines = file.readlines()

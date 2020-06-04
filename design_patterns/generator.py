@@ -9,6 +9,7 @@ a log file and writing any warning messages into another file."""
 
 """Generator expression written using list-comprehension-style
 syntax with round brackets () """
+infile = ""
 warnings = (line for line in infile if 'WARNING' in line)
 
 
