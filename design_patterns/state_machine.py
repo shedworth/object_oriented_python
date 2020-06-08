@@ -31,7 +31,7 @@ class Parser:
         self.root = None
         self.current_node = None
 
-        self.state = FirstTag()
+        self.state = first_tag
 
     def process(self, remaining_string):
         remaining = self.state.process(remaining_string, self)
@@ -51,7 +51,7 @@ class FirstTag:
         tag_name = remaining_string[i_start_tag + 1 : i_end_tag]
         root = Node(tag_name)
         parser.root = parser.current_node = root
-        parser.state = ChildNode()
+        parser.state = child_node
         return remaining_string[i_end_tag + 1 :]
 
 """Reponsible for choosing Parser's state based on first
@@ -60,11 +60,11 @@ class ChildNode:
     def process(self, remaining_string, parser):
         stripped = remaining_string.strip()
         if stripped.startswith("</"):
-            parser.state = CloseTag()
+            parser.state = close_tag
         elif stripped.startswith("<"):
-            parser.state = OpenTag()
+            parser.state = open_tag
         else:
-            parser.state = TextNode()
+            parser.state = text_node
         return stripped
 
 """Deals with opening tags. Creates new node and appends it to
@@ -84,7 +84,7 @@ class OpenTag:
             node.tag_param = tag_param
         parser.current_node.children.append(node)
         parser.current_node = node
-        parser.state = ChildNode()
+        parser.state = child_node
         return remaining_string[i_end_tag +1 :]
 
 """Deals with closing tags. Verifies that tag matches
@@ -97,7 +97,7 @@ class CloseTag:
         tag_name = remaining_string[i_start_tag + 2 : i_end_tag]
         assert tag_name == parser.current_node.tag_name
         parser.current_node = parser.current_node.parent
-        parser.state = ChildNode()
+        parser.state = child_node
         return remaining_string[i_end_tag + 1:].strip()
 
 """Adds text to current_node's text attribute"""
@@ -106,8 +106,18 @@ class TextNode:
         i_start_tag = remaining_string.find("<")
         text = remaining_string[:i_start_tag]
         parser.current_node.text = text
-        parser.state = ChildNode()
+        parser.state = child_node
         return remaining_string[i_start_tag:]
+
+
+"""Create single instance of each state object to be reused
+(rather than instantiating a new object on every state change
+and wasting memory)"""
+first_tag = FirstTag()
+child_node = ChildNode()
+text_node = TextNode()
+open_tag = OpenTag()
+close_tag = CloseTag()
 
 
 """ Setup to run from Bash"""

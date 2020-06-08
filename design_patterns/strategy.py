@@ -6,6 +6,7 @@ from PIL import Image
 
 
 class TiledStrategy:
+    """___call___ method allows class to be called directly"""
     def __call__(self, img_file, desktop_size):
         in_img = Image.open(img_file)
         out_img = Image.new("RGB", desktop_size)
